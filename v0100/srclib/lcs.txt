@@ -1,6 +1,6 @@
 -simpleos -c -Wall -o lcs.a
 
-c0l.asm
+c0s.asm
 c0.c
 x87.c
 

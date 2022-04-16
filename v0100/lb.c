@@ -1177,9 +1177,19 @@ void exit(int e)
   __builtin_unreachable();
 #else
 #ifdef _LINUX
+
+#ifdef _SIMPLEOS
+  asm("mov eax, 5\n" // sys_brk
+      "add esp, 4\n"
+      "int 88\n"
+      "sub esp, 4\n"
+      );
+#else
   asm("mov eax, 1\n"
       "mov ebx, [ebp + 8]\n"
       "int 0x80");
+#endif // _SIMPLEOS
+
 #else
 #ifdef _WIN32
   ExitProcess(e);

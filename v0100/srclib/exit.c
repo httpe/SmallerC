@@ -68,6 +68,20 @@ void DosTerminate(int e)
 
 #ifdef _LINUX
 
+#ifdef _SIMPLEOS
+
+static
+void SysExit(int status)
+{
+  asm("mov eax, 5\n" // sys_brk
+      "add esp, 4\n"
+      "int 88\n"
+      "sub esp, 4\n"
+      );
+}
+
+#else
+
 static
 void SysExit(int status)
 {
@@ -75,6 +89,8 @@ void SysExit(int status)
       "mov ebx, [ebp + 8]\n"
       "int 0x80");
 }
+
+#endif // _SIMPLEOS
 
 #endif // _LINUX
 

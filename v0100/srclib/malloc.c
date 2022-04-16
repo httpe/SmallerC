@@ -42,6 +42,20 @@ void* malloc(unsigned size)
 
 #ifdef _LINUX
 
+#ifdef _SIMPLEOS
+
+static
+char* SysBrk(char* newBreak)
+{
+  asm("mov eax, 90\n" // sys_brk
+      "add esp, 4\n"
+      "int 88\n"
+      "sub esp, 4\n"
+      );
+}
+
+#else
+
 static
 char* SysBrk(char* newBreak)
 {
@@ -49,6 +63,8 @@ char* SysBrk(char* newBreak)
       "mov ebx, [ebp + 8]\n"
       "int 0x80");
 }
+
+#endif // _SIMPLEOS
 
 static char* CurBreak;
 

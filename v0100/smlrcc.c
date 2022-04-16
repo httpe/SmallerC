@@ -162,6 +162,7 @@ char* OutName;
 #define FormatWinPe32      8
 #define FormatElf32        9
 #define FormatMach32       10
+#define FormatSimpleOS32   11
 int OutputFormat = 0;
 
 const char* LibName[] =
@@ -177,6 +178,7 @@ const char* LibName[] =
   "lcw.a",  // FormatWinPe32
   "lcl.a",  // FormatElf32
   "lcm.a",  // FormatMach32
+  "lcs.a",  // FormatSimpleOS32
 };
 
 int verbose = 0;
@@ -955,7 +957,7 @@ void Link(void)
   System(LinkerOptions);
 
 #ifdef UNIX_LIKE
-  if ((OutputFormat == FormatElf32 || OutputFormat == FormatMach32) && OutName)
+  if ((OutputFormat == FormatElf32 || OutputFormat == FormatMach32 || OutputFormat == FormatSimpleOS32) && OutName)
   {
     char* cmd = NULL;
     size_t cmdlen = 0;
@@ -1660,6 +1662,17 @@ int main(int argc, char* argv[])
       LinkStdLib = 1;
       continue;
     }
+    else if (!strcmp(argv[i], "-simpleos"))
+    {
+      OutputFormat = FormatSimpleOS32;
+      AddOption(&CompilerOptions, &CompilerOptionsLen, "-seg32");
+      DefineMacro("_SIMPLEOS");
+      DefineMacro("_LINUX"); // TODO: Remove this after all syscalls are converted
+      AddOption(&LinkerOptions, &LinkerOptionsLen, "-elf");
+      argv[i] = NULL;
+      LinkStdLib = 1;
+      continue;
+    }
     else if (!strcmp(argv[i], "-macos"))
     {
       OutputFormat = FormatMach32;
@@ -1842,6 +1855,7 @@ int main(int argc, char* argv[])
       break;
     case FormatElf32:
     case FormatMach32:
+    case FormatSimpleOS32:
       OutName = "a.out";
       break;
     case FormatFlat16:
@@ -1873,6 +1887,7 @@ int main(int argc, char* argv[])
     break;
   case FormatElf32:
   case FormatMach32:
+  case FormatSimpleOS32:
     // The default wchar_t for these formats is 32-bit signed int, which
     // does not coincide with the default in smlrc (16-bit unsigned short int).
     // If something else has been specified explicitly, that option is
@@ -1929,6 +1944,9 @@ int main(int argc, char* argv[])
       DefineMacro("__SMALLER_C_32__");
       break;
     case FormatElf32:
+      DefineMacro("__SMALLER_C_32__");
+      break;
+    case FormatSimpleOS32:
       DefineMacro("__SMALLER_C_32__");
       break;
     case FormatMach32:

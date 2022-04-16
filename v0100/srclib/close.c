@@ -101,6 +101,18 @@ int __close(int fd)
 
 #ifdef _LINUX
 
+#ifdef _SIMPLEOS
+int __close(int fd)
+{
+  asm("mov eax, 9\n" // sys_close
+      "add esp, 4\n"
+      "int 88\n"
+      "sub esp, 4\n"
+      );
+}
+
+#else
+
 int __close(int fd)
 {
   asm("mov eax, 6\n" // sys_close
@@ -111,6 +123,8 @@ int __close(int fd)
       "mov eax, -1\n" // should really return -1 on error. TBD??? set errno?
       ".done:");
 }
+
+#endif // _SIMPLEOS
 
 #endif // _LINUX
 

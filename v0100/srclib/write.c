@@ -176,6 +176,24 @@ ssize_t __write(int fd, void* buf, size_t size)
 
 #ifdef _LINUX
 
+#ifdef _SIMPLEOS
+
+ssize_t __write(int fd, void* buf, size_t size)
+{
+  asm(
+    "mov eax, 11\n"
+    "add esp, 4\n"
+    "int 88\n" // syscall
+    "sub esp, 4\n"
+    "add eax, 0\n"
+    "jns .done\n"
+    "mov eax, -1\n" // should really return -1 on error. TBD??? set errno?
+    ".done:"
+  );
+}
+
+#else
+
 ssize_t __write(int fd, void* buf, size_t size)
 {
   asm("mov eax, 4\n" // sys_write
@@ -188,6 +206,8 @@ ssize_t __write(int fd, void* buf, size_t size)
       "mov eax, -1\n" // should really return -1 on error. TBD??? set errno?
       ".done:");
 }
+
+#endif // _SIMPLEOS
 
 #endif // _LINUX
 

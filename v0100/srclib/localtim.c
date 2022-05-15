@@ -7,6 +7,9 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif
@@ -89,6 +92,7 @@ struct tm* localtime(time_t* t)
   // TBD??? struct timezone (or the whole gettimeofday()) is obsolete per POSIX 2008, use something else???
   // TBD??? honor other TZ settings???
   // TBD: figure out how to get the time zone on MacOS.
+  // SIMPLEOS TODO: support timezone?
 #ifdef _LINUX
   time_t tt = *t;
   long tv[2];

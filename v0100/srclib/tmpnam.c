@@ -16,6 +16,9 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif
@@ -196,6 +199,29 @@ int SysAccess(char* name, int amode)
       "int 0x80"); // returns -"errno", e.g. -ENOENT.
 }
 #endif // _LINUX
+
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall2(SYS_GETATTR_PATH, int, sys_getattr_path, const char*, path, fs_stat*, st)
+
+static
+int SysAccess(char* name, int amode)
+{
+  if(amode != 0) {
+    return -1; // Only support F_OK
+  }
+
+  fs_stat st = {0};
+  int r = sys_getattr_path(name, &st);
+
+  if(r < 0) {
+    return -2; // ENOENT
+  } else {
+    return 0;
+  }
+}
+#endif // _SIMPLEOS
 
 #ifdef _MACOS
 static

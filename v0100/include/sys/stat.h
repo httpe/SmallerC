@@ -5,6 +5,7 @@
 #ifndef __SYS_STAT_H
 #define __SYS_STAT_H
 
+#ifndef _SIMPLEOS
 #define S_IRUSR 0400
 #define S_IRGRP 0040
 #define S_IROTH 0004
@@ -17,6 +18,7 @@
 #define S_IRWXU 0700
 #define S_IRWXG 0070
 #define S_IRWXO 0007
+#endif
 
 #ifndef __MODE_T_DEF
 #define __MODE_T_DEF

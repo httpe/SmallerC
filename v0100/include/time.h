@@ -31,6 +31,9 @@ typedef unsigned long clock_t;
 #ifdef _LINUX
 typedef long clock_t;
 #endif
+#ifdef _SIMPLEOS
+typedef long clock_t;
+#endif
 #ifdef _MACOS
 typedef long clock_t;
 #endif
@@ -46,6 +49,10 @@ typedef long clock_t;
 
 #ifdef _LINUX
 #define CLOCKS_PER_SEC 1000000 // clock() based on times()'s tms_utime + tms_stime
+#endif
+
+#ifdef _SIMPLEOS
+#define CLOCKS_PER_SEC 1000000 // TODO: Dummy
 #endif
 
 #ifdef _MACOS

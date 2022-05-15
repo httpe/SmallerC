@@ -174,25 +174,23 @@ ssize_t __write(int fd, void* buf, size_t size)
 
 #endif // _WINDOWS
 
-#ifdef _LINUX
-
 #ifdef _SIMPLEOS
 
+#include "simpleos.h"
+static _syscall3(SYS_WRITE, int, sys_write, int, fd, const void*, buf, unsigned int, size)
 ssize_t __write(int fd, void* buf, size_t size)
 {
-  asm(
-    "mov eax, 11\n"
-    "add esp, 4\n"
-    "int 88\n" // syscall
-    "sub esp, 4\n"
-    "add eax, 0\n"
-    "jns .done\n"
-    "mov eax, -1\n" // should really return -1 on error. TBD??? set errno?
-    ".done:"
-  );
+  int r = sys_write(fd, buf, size);
+  if(r < 0) {
+    return -1;
+  } else {
+    return r;
+  }
 }
 
-#else
+#endif // _SIMPLEOS
+
+#ifdef _LINUX
 
 ssize_t __write(int fd, void* buf, size_t size)
 {
@@ -207,7 +205,6 @@ ssize_t __write(int fd, void* buf, size_t size)
       ".done:");
 }
 
-#endif // _SIMPLEOS
 
 #endif // _LINUX
 

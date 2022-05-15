@@ -249,6 +249,19 @@ int __open(char* name, int oflag, ...)
 
 #endif // _LINUX
 
+
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+_syscall2(SYS_OPEN, int, __sys_open, char*, name, int, oflag)
+
+int __open(char* name, int oflag, ...)
+{
+  return __sys_open(name, oflag);
+}
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 int __open(char* name, int oflag, ...)

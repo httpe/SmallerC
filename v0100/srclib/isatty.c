@@ -133,6 +133,24 @@ int __isatty(int fd)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall2(SYS_GETATTR_FD, int, sys_getattr_fd, int, fd, fs_stat*, st)
+
+int __isatty(int fd)
+{
+  fs_stat fs_st = {0};
+  int res = sys_getattr_fd(fd, &fs_st);
+  if(res < 0) {
+    return 0;
+  } else {
+    return fs_st.mode == S_IFCHR;
+  }
+}
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 static

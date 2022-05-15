@@ -7,6 +7,9 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif

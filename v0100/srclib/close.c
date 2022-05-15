@@ -4,6 +4,10 @@
 */
 #include <unistd.h>
 
+#ifdef _SIMPLEOS
+#include "simpleos.h"
+#endif
+
 #ifdef __HUGE__
 #define __HUGE_OR_UNREAL__
 #endif
@@ -99,19 +103,19 @@ int __close(int fd)
 
 #endif // _WINDOWS
 
-#ifdef _LINUX
-
 #ifdef _SIMPLEOS
+
+#include "simpleos.h"
+_syscall1(SYS_CLOSE, int, sys_close, int, fd)
+
 int __close(int fd)
 {
-  asm("mov eax, 9\n" // sys_close
-      "add esp, 4\n"
-      "int 88\n"
-      "sub esp, 4\n"
-      );
+  return sys_close(fd);
 }
 
-#else
+#endif // _SIMPLEOS
+
+#ifdef _LINUX
 
 int __close(int fd)
 {
@@ -123,8 +127,6 @@ int __close(int fd)
       "mov eax, -1\n" // should really return -1 on error. TBD??? set errno?
       ".done:");
 }
-
-#endif // _SIMPLEOS
 
 #endif // _LINUX
 

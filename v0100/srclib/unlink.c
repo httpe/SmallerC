@@ -121,6 +121,24 @@ int __unlink(char* name)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall1(SYS_UNLINK, int, sys_unlink, const char*, path)
+
+int __unlink(char* name)
+{
+  int r = sys_unlink(name);
+  if(r < 0){
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 int __unlink(char* name)

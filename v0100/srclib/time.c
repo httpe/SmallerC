@@ -176,6 +176,22 @@ time_t time(time_t* t)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall0(SYS_CURR_TIME_EPOCH, time_t, sys_curr_time_epoch)
+
+time_t time(time_t *t)
+{
+    time_t curr = sys_curr_time_epoch();
+    if(t) {
+        *t = curr;
+    }
+    return curr;
+}
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 static

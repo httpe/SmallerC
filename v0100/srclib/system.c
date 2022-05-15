@@ -17,6 +17,9 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif
@@ -699,6 +702,37 @@ int SysExecve(char* path, char* argv[], char* envp[])
       "int 0x80");
 }
 #endif  // _LINUX
+
+#ifdef _SIMPLEOS
+
+#include <sys/types.h>
+
+#include "simpleos.h"
+static _syscall0(SYS_FORK, int, sys_fork)
+static _syscall3(SYS_EXEC, int, SysExecve, const char*, path, char* const *, argv, char* const *, envp)
+static _syscall1(SYS_WAIT, int, sys_wait, int*, wait_status)
+
+static
+pid_t SysFork(void)
+{
+  int res = sys_fork();
+  if(res < 0) {
+    return -1;
+  } else {
+    return res;
+  }
+}
+
+static
+pid_t SysWaitpid(pid_t pid, int* status, int options)
+{
+  if(pid != -1 || options != 0) {
+    return -1;
+  }
+  return sys_wait(status);
+}
+
+#endif  // _SIMPLEOS
 
 #ifdef _MACOS
 

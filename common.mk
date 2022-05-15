@@ -37,6 +37,9 @@ clean:
 
 .SUFFIXES: .op .txt
 
+lcs.a: lcs.op
+	./smlrcc -SI $(SIMPLEOS_SRC)/kernel/include -SI $(srcdir)/include -I $(srcdir)/srclib @$<
+
 .op.a:
 	./smlrcc -SI $(srcdir)/include -I $(srcdir)/srclib @$<
 

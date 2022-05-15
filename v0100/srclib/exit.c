@@ -14,6 +14,10 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#include "simpleos.h"
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif
@@ -66,21 +70,14 @@ void DosTerminate(int e)
 
 #endif // _WINDOWS
 
-#ifdef _LINUX
-
 #ifdef _SIMPLEOS
 
-static
-void SysExit(int status)
-{
-  asm("mov eax, 5\n" // sys_brk
-      "add esp, 4\n"
-      "int 88\n"
-      "sub esp, 4\n"
-      );
-}
+#include "simpleos.h"
+static _syscall1(SYS_EXIT, void, SysExit, int, status)
 
-#else
+#endif // _SIMPLEOS
+
+#ifdef _LINUX
 
 static
 void SysExit(int status)
@@ -89,8 +86,6 @@ void SysExit(int status)
       "mov ebx, [ebp + 8]\n"
       "int 0x80");
 }
-
-#endif // _SIMPLEOS
 
 #endif // _LINUX
 

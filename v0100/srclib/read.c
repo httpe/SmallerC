@@ -189,6 +189,23 @@ ssize_t __read(int fd, void* buf, size_t size)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+_syscall3(SYS_READ, ssize_t, __sys_read, int, fd, void*, buf, size_t, size)
+
+ssize_t __read(int fd, void* buf, size_t size)
+{
+  ssize_t res = __sys_read(fd, buf, size);
+  if(res < 0) {
+    return -1;
+  } else {
+    return res;
+  }
+}
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 ssize_t __read(int fd, void* buf, size_t size)

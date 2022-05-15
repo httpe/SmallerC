@@ -116,6 +116,13 @@ off_t __lseek(int fd, off_t offset, int whence)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall3(SYS_SEEK, off_t, __lseek, int, file, off_t, offset, int, whence)
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 off_t __lseek(int fd, off_t offset, int whence)

@@ -133,6 +133,23 @@ int rename(char* old, char* new)
 
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+#include "simpleos.h"
+static _syscall3(SYS_RENAME, int, __sys_rename, const char*, old_path, const char*, new_path, uint32_t, flag)
+
+int rename(char* old, char* new)
+{
+  int res = __sys_rename(old, new, 0);
+  if(res < 0) {
+    return -1;
+  } else {
+    return res;
+  }
+}
+
+#endif // _SIMPLEOS
+
 #ifdef _MACOS
 
 int rename(char* old, char* new)

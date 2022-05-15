@@ -14,6 +14,9 @@
 #ifdef _LINUX
 #define UNIX_LIKE
 #endif
+#ifdef _SIMPLEOS
+#define UNIX_LIKE
+#endif
 #ifdef _MACOS
 #define UNIX_LIKE
 #endif
@@ -100,6 +103,18 @@ clock_t SysTimes(struct tms* buf)
 }
 #endif // _LINUX
 
+#ifdef _SIMPLEOS
+
+// SIMPLEOS TODO
+static
+clock_t SysTimes(struct tms* buf)
+{
+  return (clock_t) -1;
+}
+
+#endif // _SIMPLEOS
+
+
 #ifdef _MACOS
 
 /*
@@ -183,4 +198,4 @@ clock_t clock(void)
   return (tms.tms_utime + tms.tms_stime) * (CLOCKS_PER_SEC / 100);
 }
 
-#endif // _LINUX
+#endif // UNIX_LIKE

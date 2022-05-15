@@ -1667,7 +1667,6 @@ int main(int argc, char* argv[])
       OutputFormat = FormatSimpleOS32;
       AddOption(&CompilerOptions, &CompilerOptionsLen, "-seg32");
       DefineMacro("_SIMPLEOS");
-      DefineMacro("_LINUX"); // TODO: Remove this after all syscalls are converted
       AddOption(&LinkerOptions, &LinkerOptionsLen, "-elf");
       argv[i] = NULL;
       LinkStdLib = 1;
